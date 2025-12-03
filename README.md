@@ -78,6 +78,7 @@ ShadowNet delivers a VPN key marketplace spanning a marketing site, an admin con
 
 ## Быстрый запуск и окружение
 - **docker-compose.yml** поднимает Postgres, backend (6070), маркетинговый фронт (3050), админку (3051) и Telegram-бот. Переменные по умолчанию заданы для локальной разработки.
+- Для каждого сервиса добавлен **Dockerfile**, который устанавливает зависимости внутри образа; node-проекты используют внутренний volume `/app/node_modules`, чтобы при биндах исходников (`./service:/app`) зависимости не затирались и `docker compose up -d` сразу поднимал готовые контейнеры.
 - Шаблоны окружения:
   - `backend/.env.example` — PORT, DATABASE_URL, CORS_ORIGIN, ADMIN_USER/PASSWORD или ADMIN_PASSWORD_HASH (bcrypt), JWT_SECRET, PUBLIC_BASE_URL и хосты платёжных провайдеров.
   - `frontend-site/.env.example` и `admin-frontend/.env.example` — базовый `VITE_API_URL`.

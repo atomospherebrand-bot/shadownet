@@ -21,6 +21,7 @@ services:
       DATABASE_URL: postgres://shadownet:shadownet@db:5432/shadownet
     volumes:
       - ./backend:/app
+      - /app/node_modules
     ports:
       - "6070:6070"
     depends_on:
@@ -31,6 +32,7 @@ services:
     command: npm run dev -- --host --port 3050
     volumes:
       - ./frontend-site:/app
+      - /app/node_modules
     ports:
       - "3050:3050"
     environment:
@@ -43,6 +45,7 @@ services:
     command: npm run dev -- --host --port 3051
     volumes:
       - ./admin-frontend:/app
+      - /app/node_modules
     ports:
       - "3051:3051"
     environment:
