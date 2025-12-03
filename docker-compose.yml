@@ -1,0 +1,65 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: shadownet
+      POSTGRES_USER: shadownet
+      POSTGRES_PASSWORD: shadownet
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend_api:
+    build: ./backend
+    command: npm run dev
+    environment:
+      PORT: 6070
+      DATABASE_URL: postgres://shadownet:shadownet@db:5432/shadownet
+    volumes:
+      - ./backend:/app
+    ports:
+      - "6070:6070"
+    depends_on:
+      - db
+
+  frontend_site:
+    build: ./frontend-site
+    command: npm run dev -- --host --port 3050
+    volumes:
+      - ./frontend-site:/app
+    ports:
+      - "3050:3050"
+    environment:
+      VITE_API_URL: http://localhost:6070/api
+    depends_on:
+      - backend_api
+
+  admin_frontend:
+    build: ./admin-frontend
+    command: npm run dev -- --host --port 3051
+    volumes:
+      - ./admin-frontend:/app
+    ports:
+      - "3051:3051"
+    environment:
+      VITE_API_URL: http://localhost:6070/api
+    depends_on:
+      - backend_api
+
+  telegram_bot:
+    build: ./telegram-bot
+    command: python -m bot
+    environment:
+      BACKEND_API_URL: http://backend_api:6070/api
+      BOT_TOKEN: "${BOT_TOKEN:-dummy}"
+    volumes:
+      - ./telegram-bot:/app
+    depends_on:
+      - backend_api
+
+volumes:
+  db_data:

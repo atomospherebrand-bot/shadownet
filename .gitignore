@@ -1,0 +1,14 @@
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+dist
+.build
+.env
+__pycache__
+.env.*
+!.env.example
+!**/.env.example
+.DS_Store
+.vscode
+.idea
