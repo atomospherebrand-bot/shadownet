@@ -1,0 +1,31 @@
+import { Router, Request, Response } from 'express';
+import { getSettings, updateSettings, getBotMessages, getSiteTexts, saveBotMessages, saveSiteTexts } from '../services/settingsService.js';
+import { requireAdmin } from '../middleware/auth.js';
+
+export const settingsRouter = Router();
+
+settingsRouter.get('/', async (_req: Request, res: Response) => {
+  const data = await getSettings();
+  res.json(data);
+});
+
+settingsRouter.post('/', requireAdmin, async (req: Request, res: Response) => {
+  const updated = await updateSettings(req.body);
+  res.json(updated);
+});
+
+settingsRouter.get('/texts', async (_req: Request, res: Response) => {
+  const botMessages = await getBotMessages();
+  const siteTexts = await getSiteTexts();
+  res.json({ botMessages, siteTexts });
+});
+
+settingsRouter.post('/texts/bot', requireAdmin, async (req: Request, res: Response) => {
+  const saved = await saveBotMessages(req.body);
+  res.json(saved);
+});
+
+settingsRouter.post('/texts/site', requireAdmin, async (req: Request, res: Response) => {
+  const saved = await saveSiteTexts(req.body);
+  res.json(saved);
+});
